@@ -1,7 +1,6 @@
-# Clustering Soccer
+# Extract Data
 
-    ## Extract Data: League - Year
-    
+    ## League - Year
     FUNCTION fetch_player_stats(page)
         SET url TO "API_URL_FOR_PAGE"  # Define the API URL for the specified page
         SET response TO READ url
@@ -104,4 +103,168 @@
     PRINT df
     
     # Exporting to Excel
-    EXPORT df TO 'player_statistics_22_br.xlsx' WITH index FALSE
+    EXPORT df TO 'Dataset_Players.xlsx' WITH index FALSE
+
+# Cluster K-Means
+    # Load the Excel file
+    SET file_path TO 'Dataset_Players.xlsx'
+    SET df TO READ_EXCEL(file_path)
+    
+    # Display the first rows of the dataframe to understand the data structure
+    PRINT df
+    
+    # Select only the numeric columns
+    SET numeric_columns TO SELECT_NUMERIC_COLUMNS(df)
+    SET df_numeric TO df[numeric_columns]
+    
+    # Calculate the correlation matrix
+    SET correlation_matrix TO CALCULATE_CORRELATION(df_numeric)
+    
+    # Filter and display only the correlations greater than 0.7 or less than -0.7
+    SET filtered_correlation TO correlation_matrix[(correlation_matrix > 0.7) OR (correlation_matrix < -0.7)]
+    
+    # Remove NaN and zero values to avoid displaying trivial correlations
+    SET filtered_correlation TO STACK(filtered_correlation).RESET_INDEX()
+    SET filtered_correlation.columns TO ['Variable 1', 'Variable 2', 'Correlation']
+    SET filtered_correlation TO filtered_correlation[filtered_correlation['Variable 1'] != filtered_correlation['Variable 2']]
+    
+    # Sort correlations in ascending order
+    SET filtered_correlation TO SORT(filtered_correlation, by='Correlation', ascending=False)
+    
+    PRINT filtered_correlation
+    
+    # Save the DataFrame to the Excel sheet
+    EXPORT filtered_correlation TO 'correlation_top5.xlsx', sheet_name='Correlation', index FALSE
+    
+    # Filter players with fewer than 10 games
+    SET filtered_df TO df[df['Games'] >= 10]
+    
+    # Display the filtered data
+    PRINT filtered_df
+    
+    # Save the DataFrame to the Excel sheet
+    EXPORT filtered_df TO 'data_top5.xlsx', sheet_name='Data', index FALSE
+    
+    # Select only the numeric columns
+    SET numeric_columns TO SELECT_NUMERIC_COLUMNS(filtered_df)
+    
+    # Create a DataFrame with only numeric columns
+    SET df_numeric_filtered TO filtered_df[numeric_columns]
+    
+    # Normalize the numeric data
+    SET scaler TO StandardScaler()
+    SET df_numeric_normalized TO CREATE_DATAFRAME(scaler.fit_transform(df_numeric_filtered), columns=numeric_columns)
+    
+    # Create a DataFrame with only non-numeric columns
+    SET df_non_numeric TO filtered_df.DROP(columns=numeric_columns)
+    
+    # Reorder to place non-numeric columns at the beginning
+    SET df_normalized TO CONCATENATE(df_non_numeric.RESET_INDEX(drop=True), df_numeric_normalized, axis=1)
+    
+    PRINT df_normalized
+    
+    # Save the DataFrame to the Excel sheet
+    EXPORT df_normalized TO 'datanormalized_top5.xlsx', sheet_name='Data Normalized', index FALSE
+    
+    # Elbow Method
+    
+    # List to store inertia values
+    SET inertia_values TO EMPTY_LIST()
+    
+    # Test different numbers of clusters
+    FOR num_clusters FROM 2 TO 19 DO
+        SET kmeans TO KMeans(n_clusters=num_clusters, random_state=42)
+        CALL kmeans.fit(df_numeric_normalized)
+        APPEND kmeans.inertia_ TO inertia_values
+    END FOR
+    
+    # Plot inertia graph to identify the "elbow"
+    CREATE_FIGURE(figsize=(8, 5))
+    CALL plt.plot(range(2, 20), inertia_values, marker='o')
+    SET TITLE TO 'Elbow Method'
+    SET X_LABEL TO 'Number of Clusters'
+    SET Y_LABEL TO 'Inertia'
+    CALL plt.grid(True)
+    CALL plt.show()
+    
+    # Silhouette Scores
+    
+    SET silhouette_scores TO EMPTY_LIST()
+    
+    # Test different numbers of clusters
+    FOR num_clusters FROM 2 TO 19 DO
+        SET kmeans TO KMeans(n_clusters=num_clusters, random_state=42)
+        SET cluster_labels TO kmeans.fit_predict(df_numeric_normalized)
+        
+        # Calculate silhouette coefficient score
+        SET silhouette_avg TO silhouette_score(df_numeric_normalized, cluster_labels)
+        APPEND silhouette_avg TO silhouette_scores
+    END FOR
+    
+    # Plot silhouette coefficient graph
+    CREATE_FIGURE(figsize=(8, 5))
+    CALL plt.plot(range(2, 20), silhouette_scores, marker='o')
+    SET TITLE TO 'Silhouette Coefficient'
+    SET X_LABEL TO 'Number of Clusters'
+    SET Y_LABEL TO 'Silhouette Coefficient Score'
+    CALL plt.grid(True)
+    CALL plt.show()
+    
+    # Choose the number of clusters
+    SET num_clusters TO 10
+    
+    # Apply K-means
+    SET kmeans TO KMeans(n_clusters=num_clusters, random_state=42)
+    SET df_normalized['Cluster'] TO kmeans.fit_predict(df_numeric_normalized) + 1
+    
+    # Display the DataFrame with clusters
+    PRINT df_numeric_normalized.head()
+    
+    # Save the DataFrame with clusters to an Excel file
+    EXPORT df_normalized TO 'data_top5_clustered.xlsx', sheet_name='Data with Clusters', index FALSE
+    
+    # Importance of Average Rating
+    
+    # Separate independent (X) and dependent (y) variables
+    SET X TO df_numeric_filtered.DROP(columns=['Average Rating'])
+    SET y TO df_numeric_filtered['Average Rating']
+    
+    # Fit the Random Forest model
+    SET rf_model TO RandomForestRegressor(random_state=42)
+    CALL rf_model.fit(X, y)
+    
+    # Get the importance of variables
+    SET importances TO pd.Series(rf_model.feature_importances_, index=X.columns).SORT_VALUES(ascending=False)
+    
+    # Create a DataFrame to save to Excel
+    SET importances_df TO importances.RESET_INDEX()
+    SET importances_df.columns TO ['Variable', 'Importance']
+    
+    # Display the importances
+    PRINT importances
+    
+    # Save the DataFrame with Gini to an Excel file
+    EXPORT importances TO 'average_rating_top5_gini.xlsx', sheet_name='AverageRating', index TRUE
+    
+    # Importance of Market Value
+    
+    # Separate independent (X) and dependent (y) variables
+    SET X TO df_numeric_filtered.DROP(columns=['Market Value'])
+    SET y TO df_numeric_filtered['Market Value']
+    
+    # Fit the Random Forest model
+    SET rf_model TO RandomForestRegressor(random_state=42)
+    CALL rf_model.fit(X, y)
+    
+    # Get the importance of variables
+    SET importances TO pd.Series(rf_model.feature_importances_, index=X.columns).SORT_VALUES(ascending=False)
+    
+    # Create a DataFrame to save to Excel
+    SET importances_df TO importances.RESET_INDEX()
+    SET importances_df.columns TO ['Variable', 'Importance']
+    
+    # Display the importances
+    PRINT importances
+    
+    # Save the DataFrame with Gini to an Excel file
+    EXPORT importances TO 'market_value_top5_gini.xlsx', sheet_name='MarketValue', index TRUE
