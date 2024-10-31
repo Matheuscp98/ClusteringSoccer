@@ -25,6 +25,10 @@ The available Excel files are listed below.
    [Dataset_Players.xlsx](Dataset_Players.xlsx)  
    *Data extracted from [Sofascore](https://sofascore.com/) with K-Means clustering already performed.*
 
+2. **Statistics**  
+   [Statistics.xlsx](Statistics.xlsx)  
+   *Basic Statistics from [Dataset_Players.xlsx](Dataset_Players.xlsx).*
+
 ## Contact
 
 If you have any questions or suggestions, feel free to reach out via:
