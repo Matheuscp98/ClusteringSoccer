@@ -26,7 +26,7 @@ The main goal is to enable users to execute the process in Python (or another pr
 
 This repository is part of the research study:
 
--  *(The dataset is from this work. Manuscript currently under review)*
+-  *Manuscript currently under peer review*
 
 ---
 
