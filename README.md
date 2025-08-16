@@ -2,7 +2,7 @@
 
 ## 📝 Description
 
-This **Python code** (with **pseudocode** provided in [**PseudocodeClusteringSoccer.md**](PseudocodeClusteringSoccer.md)) addresses the use of **K-Means Clustering in soccer** to group **players with similar performance characteristics**.
+This **Python code** (with **pseudocode** provided in [**Pseudocode Clustering Soccer**](PseudocodeClusteringSoccer.md)) addresses the use of **K-Means Clustering in soccer** to group **players with similar performance characteristics**.
 
 The code is designed in **Python** to extract data from [**Sofascore**](https://sofascore.com/) and [**Transfermarkt**](https://www.transfermarkt.com/), performing **clustering of soccer players** using the **unsupervised machine learning algorithm K-Means**. It allows users to work with their **own datasets** of **athletes, referees, teams**, or any other preferred datasets. The **datasets used in the study** are also provided, containing data from the **five major European leagues** (**Premier League, La Liga, Serie A, Bundesliga, Ligue 1**) for the **2022/2023 season**, as well as data from the **Brazilian league**.
 
@@ -31,10 +31,10 @@ This repository is part of the research study:
 
 ## 📁 Excel Spreadsheets
 
-| File                   | Description                                                                           |
-|------------------------|---------------------------------------------------------------------------------------|
-| **Dataset_Players.xlsx** | Data extracted from [Sofascore](https://sofascore.com/) and [Transfermarkt](https://www.transfermarkt.com/) with K-Means clustering already performed. |
-| **Statistics.xlsx**      | Basic statistics from [Dataset_Players.xlsx](Dataset_Players.xlsx).                  |
+| File | Description |
+|------|-------------|
+| [**Dataset Players**](Dataset_Players.xlsx) | Data extracted from [**Sofascore**](https://sofascore.com/) and [**Transfermarkt**](https://www.transfermarkt.com/) with **K-Means clustering** already performed. |
+| [**Statistics**](Statistics.xlsx) | Basic statistics from [**Dataset Players**](Dataset_Players.xlsx). |
 
 ---
 
