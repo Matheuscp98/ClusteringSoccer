@@ -12,6 +12,13 @@ The main goal is to enable users to execute the **process in Python** (or anothe
 
 ---
 
+## 📚 Publications
+
+This repository is part of the research study:
+
+-  *Manuscript currently under peer review*
+---
+
 ## 🛠️ How to Use
 
 1. **Clone or download** this repository to your **local machine**.  
@@ -19,14 +26,6 @@ The main goal is to enable users to execute the **process in Python** (or anothe
 3. **Use** your **own dataset** or the **datasets provided** by the author.  
 4. **Run** the **Python** (or other programming language) **code blocks**.  
 5. The code includes **detailed comments** and **spreadsheets** to help you understand its functionality.  
-
----
-
-## 📚 Publications
-
-This repository is part of the research study:
-
--  *Manuscript currently under peer review*
 
 ---
 
