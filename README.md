@@ -12,9 +12,11 @@ The main goal is to enable users to execute the **process in Python** (or anothe
 
 ## 📚 Publications
 
-This repository is part of the research study:
+In addition to ongoing manuscripts, the following public papers are already available:
 
--  *Manuscript currently under peer review*
+- **Identifying Soccer Player Profiles Through Clustering: An Analysis of the Big Five European Leagues**
+  [Read here](https://proceedings.science/sbpo/sbpo-2025/trabalhos/identifying-soccer-player-profiles-through-clustering-an-analysis-of-the-big-fiv) 
+  
 ---
 
 ## 🛠️ How to Use
